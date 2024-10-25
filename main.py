@@ -101,22 +101,18 @@ def get_post_then_format_according_to_user(postID: int):
 ############################################################################################################
 @app.get("/detailed_post/{userID}")
 def get_detailed_posts(userID: int):
-    # Step 1: Get all posts by the userID
-    all_posts = get_posts()  # Get all posts
-    user_posts = [post for post in all_posts if post['userId'] == userID]  # Filter by userID
 
-    # Step 2: Initialize the data structure to store user posts and their comments
+    all_posts = get_posts()  
+    user_posts = [post for post in all_posts if post['userId'] == userID]  
+
     detailed_data = {"userID": userID, "posts": []}
 
-    # Step 3: Loop through each post by the user
     for post in user_posts:
         post_id = post['id']
         
-        # Fetch comments for the current post
         req = requests.get(f'http://127.0.0.1:8000/comments/?postId={post_id}')
         comments = json.loads(req.text)
         
-        # Format each post with its comments
         detailed_data["posts"].append({
             "post_title": post["title"],
             "post_body": post["body"],
